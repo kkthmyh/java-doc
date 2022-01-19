@@ -128,7 +128,13 @@ key的hash值和其右移动16位，为的是保证hash函数的散列性，将�
 
 ###  阻塞队列的理解
 
-###  JUC包下的常用类和使用场景，聊聊AQS
+###  聊聊AQS
+
+三大核心
+
+- state变量，对于每个集成aqs类的含义是不同的
+- 一个FIFO的队列，底层是双向链表，维持排队任务
+- 需要实现获取/释放的方法
 
 ###  聊聊volatile和synchronized
 
@@ -182,7 +188,13 @@ key的hash值和其右移动16位，为的是保证hash函数的散列性，将�
 
 ###  谈谈对ThreadLocal的理解
 
-###  ThreadLocal的内存溢出怎么解决？使用过程中有没有遇见过线程安全性问题，怎么解决的
+线程本地变量内部是一个ThreadLocalMap，其内部是一个Entry数组，每个Entry对象由k,v键值对构成，key保存的是ThreadLocal对象，v保存的是set的值
+
+###  ThreadLocal的内存泄露怎么解决？使用过程中有没有遇见过线程安全性问题，怎么解决的
+
+![avatar](./面试/10.png)
+
+threadLocal对象使用完毕之后，由于没有强引用指向，而new ThreadLocal和Entry的Key是弱引用，在GC时会直接回收key，从而无引用指向value，但是value是实际存在的，所以会造成内存泄露
 
 ###  ThreadLocal的子父线程传递问题
 
@@ -207,6 +219,8 @@ key的hash值和其右移动16位，为的是保证hash函数的散列性，将�
 - 标记压缩
 
   缺点：效率低
+
+  ![avatar](./面试/9.png)
 
 ###  垃圾如何识别，其中可达性分析中以哪些对象作为GCROOT
 
