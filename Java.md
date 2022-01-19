@@ -2,6 +2,10 @@
 
 ##  1.Java基础
 
+###  集合的架构
+
+![](./面试/11.png)
+
 ###  ArrayList的扩容机制
 
 ###  String
@@ -122,6 +126,8 @@ key的hash值和其右移动16位，为的是保证hash函数的散列性，将�
      PS：使用DiscardPolicy或者DiscardOldestPolicy，并且线程池饱和了的时候，我们将会直接丢弃任务，不会抛出任何异常。这个时候再来调用get方法是主线程就会一直等待子线程返回结果，直到超时抛出TimeoutException。
 ```
 
+
+
 ###  如何动态调整线程池的大小
 
 ###  线程池中线程是如何命名的
@@ -198,13 +204,17 @@ threadLocal对象使用完毕之后，由于没有强引用指向，而new Threa
 
 ###  ThreadLocal的子父线程传递问题
 
-
+```java
+InheritableThreadLocal
+```
 
 ##  2 JVM
 
 ###  JVM内存的各个分区及其作用
 
 ![](./面试/7.png)
+
+###  JVM的类加载机制以及为何要这样设计
 
 ###  垃圾回收算法
 
@@ -229,8 +239,6 @@ threadLocal对象使用完毕之后，由于没有强引用指向，而new Threa
 ###  年轻代用什么垃圾回收算法，老年代用什么垃圾回收算法以及原因
 
 ###  线上频繁出现fullgc和OOM情况怎么定位问题
-
-###  类加载机制
 
 
 
@@ -325,9 +333,27 @@ threadLocal对象使用完毕之后，由于没有强引用指向，而new Threa
 
 ###  mq怎么确保消息不被重复消费和消息不丢失
 
+###  SQL的执行流程
+
+mysql的架构图
+
+![avatar](./面试/16.png)
+
+抽象语法树AST
+
+![avatar](./面试/15.png)
+
+###  Mysql的关键字执行流程
+
+```sql
+from--where--group by--having--select--order by
+```
+
+###  聚簇索引和非聚簇索引
+
 ###  Mysql的存储引擎
 
-####  Mysql支持哪些索引
+####  存储引擎
 
 - InnoDB
 - MyISAM
@@ -339,7 +365,7 @@ threadLocal对象使用完毕之后，由于没有强引用指向，而new Threa
 - InnoDB支持事务，MyISAM不支持事务，强调的是性能，查询速度更快
 - InnoDB支持行锁及表锁，MyISAM只支持表锁
 - InnoDB支持外键，MyISAM不支持
-- InnoDB不支持保存具体行数，count()时要扫描全表计算行数，而MyISAM内置了一个计数器，count()时直接从计数器中读取
+- InnoDB的索引和数据是放在一个文件中的，MyISam的索引文件和数据文件是分开的
 
 ###  索引结构，为什么是B+不是B，B+一般几层
 
@@ -366,7 +392,15 @@ threadLocal对象使用完毕之后，由于没有强引用指向，而new Threa
 - key：索引
 - extra：额外信息
 
+###  事务的四大特性和隔离级别
+
+
+
 ###  mysql的binlog、undolog、redolog
+
+- binlog负责数据的同步
+- undolog负责保证事务的原子性
+- redolog负责保证事务的持久化
 
 ##  4 框架
 
@@ -419,7 +453,12 @@ threadLocal对象使用完毕之后，由于没有强引用指向，而new Threa
 ###  分布式事务常见的实现方式
 
 - 2PC（两阶段提交）
+
+  ![avatar](./面试/13.png)
+
 - TCC （Try-Confirm-Cancel）
+
+  ![avatar](./面试/14.png)
 
 ###  分布式事务接口怎么确保幂等
 
