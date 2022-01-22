@@ -1,5 +1,3 @@
-
-
 ##  1.Java基础
 
 ###  集合的架构
@@ -126,11 +124,13 @@ key的hash值和其右移动16位，为的是保证hash函数的散列性，将�
      PS：使用DiscardPolicy或者DiscardOldestPolicy，并且线程池饱和了的时候，我们将会直接丢弃任务，不会抛出任何异常。这个时候再来调用get方法是主线程就会一直等待子线程返回结果，直到超时抛出TimeoutException。
 ```
 
-
-
 ###  如何动态调整线程池的大小
 
-###  线程池中线程是如何命名的
+###  线程池中线程如何自定义命名
+
+```java
+实现ThreadFactory类，重写newThread()方法
+```
 
 ###  阻塞队列的理解
 
@@ -240,7 +240,15 @@ InheritableThreadLocal
 
 ###  线上频繁出现fullgc和OOM情况怎么定位问题
 
+- fullgc
 
+  使用-XX +开启GC日志参数，分析GC日志
+
+- OOM
+
+  1、使用-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/heap指定程序发生OOM时Dump日志
+
+  2、使用jprofiler类的软件进行堆内存分析，找出最大对象
 
 ##  3 中间件
 
@@ -349,8 +357,6 @@ mysql的架构图
 from--where--group by--having--select--order by
 ```
 
-###  聚簇索引和非聚簇索引
-
 ###  Mysql的存储引擎
 
 ####  存储引擎
@@ -369,10 +375,45 @@ from--where--group by--having--select--order by
 
 ###  索引结构，为什么是B+不是B，B+一般几层
 
-- 索引数据和实际数据都存储在磁盘中
-- 进行查询时，需要将磁盘数据加载在内存中
-- 分块进行数据读取（读取页的整数倍）
-- 数据结构的选择
+**为什么要设计索引**
+
+![avatar](./面试/17.png)
+
+**innodb不使用hash表的原因**
+
+![avatar](./面试/18.png)
+
+**为何不使用二叉树**
+
+![avatar](./面试/19.png)
+
+**b树和b+树的数据结构区别**
+
+b树的叶子节点没有指针相互指向
+
+b树的叶子节点不包含全量数据，因此使用b树作为索引结构则要求非叶子节点必须保存data，而磁盘读取是按页（4K或8K的整数倍）来读取的，故同等层数的b树保存的数据远远低于b+树
+
+![avatar](./面试/20.png)
+
+![avatar](./面试/21.png)
+
+**一般情况下3-4层的b+树足以支撑千万级别的数据**
+
+###  聚簇索引和非聚簇索引
+
+![avatar](./面试/22.png)
+
+![avatar](./面试/23.png)
+
+**聚簇索引和非聚簇索引的结构对比**
+
+![avatar](./面试/24.png)
+
+![avatar](./面试/25.png)
+
+###  索引设计要注意的点和常见的索引失效情况
+
+![avatar](./面试/26.png)
 
 ###  索引的分类
 
@@ -383,6 +424,33 @@ from--where--group by--having--select--order by
 - 组合索引
 
 ###  回表、索引覆盖、索引下推、最左匹配原则
+
+```sql
+回表
+id、name、age、gender，id是主键，name是普通索引，
+select * from table where name = "zhangsan";
+查找过程：先根据name的值去name的b+树找到对应叶子节点，取出id值，再根据id值取id的b+树查找全部结果，这个过程称为回表
+回表效率较低，因此要尽可能避免回表
+```
+
+```sql
+索引覆盖
+id、name、age、gender，id是主键，name是普通索引，
+select id,name from table where name = "zhangsan";
+查找过程：先根据name的值去name的b+树查询结果，能够直接获取到id和name，不需要去id的b+树查数据了，此过程称为索引覆盖
+索引的叶子节点包含了要查询的全部数据，叫做索引覆盖，推荐使用
+```
+
+```sql
+最左匹配
+id、name、age、gender，id是主键，name、age是组合索引，
+select * from table where name = ?;[符合]
+select * from table where name = ? and age = ?;[符合]
+select * from table where age = ?; [不符合]
+
+```
+
+
 
 ###  数据库事务，mysql如何解决幻读问题
 
