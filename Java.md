@@ -100,6 +100,7 @@ key的hash值和其右移动16位，为的是保证hash函数的散列性，将�
 
 ```java
 1.核心线程数
+    如果运行的线程数大于corePoolSize(线程池中的核心线程数)但小于maximumPoolSize(线程池中可存在的最大线程数)，那么只有在队列满时才会创建一个新的线程。 通过将corePoolSize和maximumPoolSize设置为相同的值，可以创建一个固定大小的线程池，也就是将线程池中允许存在的线程都设置为核心线程。
 2.总线程数
 3.存活时间
 4.存活时间单位
@@ -341,6 +342,8 @@ InheritableThreadLocal
 
 - allkeys-lfu：从所有键中驱逐使用频率最少的键
 
+###  如何保证数据库和redis数据一致
+
 ###  mq怎么确保消息不被重复消费和消息不丢失
 
 ###  SQL的执行流程
@@ -504,7 +507,13 @@ select for update
 
 ###  Spring中的控制反转理解
 
+![avatar](./面试/12.png)
+
+###  谈谈对Spring AOP的理解
+
 ###  Spring的事务传播特性
+
+###  事务失效的情况
 
 ###  bean的生命周期
 
