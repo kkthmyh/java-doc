@@ -456,7 +456,14 @@ select * from table where age = ?; [不符合]
 
 ###  事务的四大特性和隔离级别
 
+![avatar](./面试/34.png)
+
+![avatar](./面试/35.png)
+
+![avatar](./面试/36.png)
+
 ```sql
+幻读和不可重复读有点类似，但是幻读强调的是单条数据的不一致而幻读强调集合(读取数据条数)的不一致
 四大特性
     原子性----undo log
     一致性----保证了其他三个特性即保证了一致性
@@ -508,6 +515,8 @@ select for update
 ###  Spring中的控制反转理解
 
 ![avatar](./面试/12.png)
+
+![avatar](./面试/33.png)
 
 ###  谈谈对Spring AOP的理解
 
